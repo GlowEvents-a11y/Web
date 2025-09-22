@@ -3,11 +3,326 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Glow Events & Decor — Request a Quote</title>
+  <title>Glow Events — Request a Quote</title>
   <meta name="description" content="Events, balloon decoration, birthdays, weddings, and more. Request a fast custom quote." />
-  <!-- Styles and scripts inlined -->
+  <style>
+    :root {
+      --bg: #0f172a;               /* slate-900 */
+      --panel: #111827;            /* gray-900 */
+      --muted: #94a3b8;            /* slate-400 */
+      --text: #e5e7eb;             /* gray-200 */
+      --brand: #8b5cf6;            /* violet-500 */
+      --brand-2: #22d3ee;          /* cyan-400 */
+      --accent: #f472b6;           /* pink-400 */
+      --ok: #10b981;               /* emerald-500 */
+      --warn: #f59e0b;             /* amber-500 */
+      --error: #ef4444;            /* red-500 */
+      --radius: 18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.3);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, sans-serif;
+      color: var(--text); background: radial-gradient(1200px 600px at 10% 10%, rgba(139,92,246,.18), transparent),
+                              radial-gradient(800px 400px at 90% 0%, rgba(34,211,238,.15), transparent),
+                              var(--bg);
+      line-height: 1.6;
+    }
+    a { color: var(--brand-2); text-decoration: none; }
+    header { position: sticky; top: 0; backdrop-filter: blur(10px); background: rgba(17,24,39,.6); z-index: 40; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .nav { display: flex; gap: 20px; align-items: center; justify-content: space-between; }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 0.3px; }
+    .bubble { width: 28px; height: 28px; border-radius: 999px; background: linear-gradient(135deg, var(--brand), var(--accent)); box-shadow: 0 6px 16px rgba(139,92,246,.6); position: relative; }
+    .bubble::after{ content:""; position:absolute; right:-6px; bottom:-4px; width:10px; height:10px; border-radius:999px; background: linear-gradient(135deg, var(--brand-2), var(--accent)); filter: blur(.2px); }
+    nav a { color: var(--text); opacity: .9; font-weight: 600; }
+    nav a:hover { opacity: 1; }
+
+    .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; padding: 60px 20px 40px; align-items: center; }
+    .hero h1 { font-size: clamp(28px, 4vw, 46px); line-height: 1.15; margin: 0 0 12px; }
+    .hero p { color: var(--muted); margin: 0 0 20px; }
+    .cta { display: inline-flex; align-items: center; gap: 10px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); color: #0b1020; font-weight: 800; border: none; padding: 14px 18px; border-radius: 999px; cursor: pointer; box-shadow: var(--shadow); }
+    .cta span.icon { display:inline-flex; width: 24px; height:24px; align-items:center; justify-content:center; border-radius:999px; background: #fff; }
+    .panel { background: rgba(17,24,39,.75); border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow); }
+
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .card { padding: 18px; border-radius: var(--radius); background: rgba(15,23,42,.7); border: 1px solid rgba(255,255,255,.06); }
+    .card h3 { margin: 0 0 6px; }
+    .pill { display:inline-block; padding:4px 10px; border-radius:999px; background: rgba(139,92,246,.15); border:1px solid rgba(139,92,246,.35); font-size: 12px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { font-size: 13px; color: var(--muted); }
+    input, select, textarea { width: 100%; padding: 12px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.08); background: rgba(2,6,23,.6); color: var(--text); outline: none; }
+    textarea { min-height: 120px; resize: vertical; }
+    .full { grid-column: 1 / -1; }
+    .actions { display:flex; gap:10px; align-items:center; }
+    .submit { background: linear-gradient(135deg, var(--brand), var(--brand-2)); border: none; color: #0b1020; font-weight: 800; padding: 14px 16px; border-radius: 12px; cursor: pointer; }
+    .ghost { background: transparent; border: 1px dashed rgba(255,255,255,.2); color: var(--text); padding: 12px 14px; border-radius: 12px; cursor: pointer; }
+    .note { font-size: 12px; color: var(--muted); }
+
+    .prices { display:grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+    .price { padding: 18px; border-radius: var(--radius); background: rgba(15,23,42,.7); border:1px solid rgba(255,255,255,.06); }
+    .price h3 { margin: 0 0 6px; }
+    .price .amt { font-size: 28px; font-weight: 900; }
+    .price ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+
+    footer { margin-top: 40px; padding: 30px 0 50px; color: var(--muted); text-align: center; }
+
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: repeat(2, 1fr); }
+      .grid-2 { grid-template-columns: 1fr; }
+      form { grid-template-columns: 1fr; }
+      .prices { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <!-- The full code from the created website goes here -->
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><span class="bubble"></span> Glow Events & Decor</div>
+      <nav style="display:flex; gap:16px;">
+        <a href="#services">Services</a>
+        <a href="#pricing">Packages</a>
+        <a href="#quote" class="pill">Request a Quote</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <h1>Balloon Decor, Birthdays, Weddings & Everything In‑Between</h1>
+        <p>We design joyful, photo‑ready moments — from luxe wedding arches to playful birthday installs and corporate brand activations. Tell us your vision; we’ll craft the wow.</p>
+        <button class="cta" onclick="document.getElementById('quote').scrollIntoView({behavior:'smooth'})">
+          <span class="icon">💬</span> <strong>Get a Fast Quote</strong>
+        </button>
+      </div>
+      <div class="panel" style="padding:16px;">
+        <img alt="Balloon arch sample" src="https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?q=80&w=1000&auto=format&fit=crop" style="width:100%; height: 280px; object-fit: cover; border-radius: 14px;" />
+      </div>
+    </section>
+
+    <section id="services" style="margin-top: 20px;">
+      <h2 style="margin:0 0 10px;">Popular Services</h2>
+      <p class="note">All designs are custom — here are some customer favorites.</p>
+      <div class="cards">
+        <div class="card">
+          <h3>Balloon Garlands</h3>
+          <p class="note">Organic garlands, arches & photo backdrops.</p>
+        </div>
+        <div class="card">
+          <h3>Birthday Styling</h3>
+          <p class="note">Themes, color palettes & full setup.</p>
+        </div>
+        <div class="card">
+          <h3>Wedding Decor</h3>
+          <p class="note">Ceremony arches, sweetheart tables & lounges.</p>
+        </div>
+        <div class="card">
+          <h3>Corporate Events</h3>
+          <p class="note">Brand colors, step‑and‑repeat backdrops, launches.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing" style="margin-top: 30px;">
+      <h2 style="margin:0 0 10px;">Transparent Packages</h2>
+      <p class="note">Exact pricing depends on size, materials & delivery distance. These ballparks help you plan.</p>
+      <div class="prices">
+        <div class="price">
+          <h3>Party Starter</h3>
+          <div class="amt">$250–$500</div>
+          <ul>
+            <li>Mini garland (8–10 ft)</li>
+            <li>Backdrop stand rental</li>
+            <li>Delivery & basic install</li>
+          </ul>
+        </div>
+        <div class="price" style="border-color: rgba(34,211,238,.5);">
+          <h3>Signature</h3>
+          <div class="amt">$600–$1,200</div>
+          <ul>
+            <li>Custom color palette</li>
+            <li>Statement arch or 16–20 ft garland</li>
+            <li>Props (pedestals / neon sign)</li>
+          </ul>
+        </div>
+        <div class="price" style="border-color: rgba(139,92,246,.5);">
+          <h3>Grand Gala</h3>
+          <div class="amt">$1,500+</div>
+          <ul>
+            <li>Multi‑zone styling & premium materials</li>
+            <li>On‑site team & teardown</li>
+            <li>Custom signage & florals</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="quote" style="margin-top: 30px;">
+      <h2 style="margin:0 0 10px;">Request a Quote</h2>
+      <p class="note">Answer a few quick questions. We’ll reply within 24 hours.</p>
+      <div class="panel" style="padding:18px;">
+        <form id="quoteForm">
+          <div>
+            <label for="name">Full Name</label>
+            <input id="name" name="name" placeholder="Alex Rivera" required />
+          </div>
+          <div>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="you@example.com" required />
+          </div>
+
+          <div>
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" placeholder="(555) 555‑5555" />
+          </div>
+          <div>
+            <label for="eventType">Event Type</label>
+            <select id="eventType" name="eventType" required>
+              <option value="">Choose…</option>
+              <option>Birthday</option>
+              <option>Wedding</option>
+              <option>Baby Shower</option>
+              <option>Corporate</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="date">Event Date</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+          <div>
+            <label for="guests">Guest Count</label>
+            <input id="guests" name="guests" type="number" min="1" placeholder="e.g., 80" />
+          </div>
+
+          <div class="full">
+            <label for="venue">Venue & Address</label>
+            <input id="venue" name="venue" placeholder="Venue name, street, city" />
+          </div>
+
+          <div>
+            <label for="budget">Estimated Budget</label>
+            <select id="budget" name="budget">
+              <option>Undecided</option>
+              <option>$250–$500</option>
+              <option>$600–$1,200</option>
+              <option>$1,500–$3,000</option>
+              <option>$3,000+</option>
+            </select>
+          </div>
+          <div>
+            <label>Services Needed</label>
+            <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:10px;">
+              <label><input type="checkbox" name="services" value="Balloon Decor" /> Balloon Decor</label>
+              <label><input type="checkbox" name="services" value="Backdrop/Arch" /> Backdrop / Arch</label>
+              <label><input type="checkbox" name="services" value="Florals" /> Florals</label>
+              <label><input type="checkbox" name="services" value="Lighting" /> Lighting</label>
+              <label><input type="checkbox" name="services" value="Signage/Neon" /> Signage / Neon</label>
+              <label><input type="checkbox" name="services" value="Full Styling" /> Full Styling</label>
+            </div>
+          </div>
+
+          <div class="full">
+            <label for="message">Tell us about your vision</label>
+            <textarea id="message" name="message" placeholder="Colors, theme, inspiration, must‑haves…"></textarea>
+          </div>
+
+          <div class="full actions">
+            <button type="submit" class="submit">Send Quote Request</button>
+            <button type="reset" class="ghost">Reset</button>
+            <span class="note">We’ll never share your info.</span>
+          </div>
+
+          <div id="formStatus" class="full note" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+      <p class="note" style="margin-top:10px;">Prefer email? Write to <a href="mailto:hello@yourevents.com">hello@yourevents.com</a></p>
+    </section>
+
+    <section style="margin-top: 30px;" aria-labelledby="faqH">
+      <h2 id="faqH" style="margin:0 0 10px;">FAQ</h2>
+      <details class="panel" style="padding:14px;">
+        <summary><strong>How far in advance should I book?</strong></summary>
+        <p class="note">We recommend 2–4 weeks for small installs and 6–8 weeks for weddings & large events.</p>
+      </details>
+      <details class="panel" style="padding:14px; margin-top:10px;">
+        <summary><strong>Do you deliver and install?</strong></summary>
+        <p class="note">Yes — all packages include delivery and professional installation. Teardown is included in Grand Gala.</p>
+      </details>
+    </section>
+
+    <footer>
+      © <span id="year"></span> Glow Events & Decor • <a href="#quote">Get a Quote</a>
+    </footer>
+  </main>
+
+  <script>
+    // Set current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // "Backend‑free" submission via mailto fall‑back + nice UX
+    const form = document.getElementById('quoteForm');
+    const status = document.getElementById('formStatus');
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      // Basic validation
+      const requiredIds = ['name','email','eventType','date'];
+      for (const id of requiredIds){
+        const el = document.getElementById(id);
+        if(!el.value){
+          status.textContent = 'Please fill out all required fields.';
+          status.style.color = 'var(--warn)';
+          el.focus();
+          return;
+        }
+      }
+
+      const data = new FormData(form);
+      const services = data.getAll('services').join(', ') || '—';
+      const payload = {
+        Name: data.get('name'),
+        Email: data.get('email'),
+        Phone: data.get('phone') || '—',
+        'Event Type': data.get('eventType'),
+        Date: data.get('date'),
+        Guests: data.get('guests') || '—',
+        Venue: data.get('venue') || '—',
+        Budget: data.get('budget'),
+        Services: services,
+        Message: (data.get('message') || '').replace(/\n/g,' ')
+      };
+
+      const lines = Object.entries(payload).map(([k,v]) => `${k}: ${v}`);
+      const subject = encodeURIComponent(`Quote Request — ${payload['Event Type']} on ${payload['Date']}`);
+      const body = encodeURIComponent(lines.join('\n'));
+
+      // TODO: Replace with your business email
+      const to = 'glowevents250@gmail.com';
+      const mail = `mailto:${to}?subject=${subject}&body=${body}`;
+
+      // Open mail client
+      window.location.href = mail;
+      status.textContent = 'Opening your email app with the request. If nothing opens, email us at ' + to + ' with your details.';
+      status.style.color = 'var(--ok)';
+
+      // Optional: also store locally for your own follow‑up (no server)
+      try {
+        const saved = JSON.parse(localStorage.getItem('quoteRequests') || '[]');
+        saved.push({ ts: Date.now(), ...payload });
+        localStorage.setItem('quoteRequests', JSON.stringify(saved));
+      } catch(err){ /* ignore */ }
+
+      form.reset();
+    });
+  </script>
 </body>
 </html>
